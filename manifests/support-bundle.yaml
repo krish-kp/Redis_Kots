@@ -1,0 +1,19 @@
+apiVersion: troubleshoot.replicated.com/v1beta1
+kind: Collector
+metadata:
+  name: collector-sample
+spec:
+  collectors:
+    - redis:
+        collectorName: redis
+        uri: rediss://redis-svc:6379
+    - clusterInfo: {}
+    - clusterResources: {}
+    - logs:
+        selector:
+          - app=redisdb
+          - app=redisinsight
+        namespace: '{{repl Namespace }}'
+        limits:
+          maxAge: 30d
+          maxLines: 10000

@@ -1,0 +1,37 @@
+apiVersion: kots.io/v1beta1
+kind: Application
+metadata:
+  name: app-slug
+spec:
+  title: Redis 
+  allowRollback: true
+  icon: https://raw.githubusercontent.com/krish-kp/Redis_Kots/main/Redis-Logo.png
+  statusInformers:
+    - deployment/redisdb
+    - deployment/redisinsight
+    - service/redisinsight-svc
+    - service/redis-svc
+  ports:
+    - serviceName: "redisinsight-svc"
+      servicePort: 8001
+      localPort: 80
+      applicationUrl: "http://redisinsight-svc"
+  graphs:  
+    - title: "Node CPU Usage"
+      query: 'sum(rate(container_cpu_usage_seconds_total{namespace="default",container!="POD",pod!=""}[5m])) by (pod)'
+      legend: "{{ pod }}"
+    - title: "Node Memory Usage"
+      query: 'sum(container_memory_usage_bytes{namespace="default",container!="POD",pod!=""}) by (pod)'
+      legend: "{{ pod }}"
+      yAxisFormat: bytes
+    - title: "Node Network Usage"
+      query: 'sum(rate(node_network_transmit_bytes_total{job="node-exporter",instance!=""}[5m]))by (instance)'
+      legend: "Used: {{ instance }}"
+      yAxisFormat: bytes
+    - title: "Node Disk Usage"
+      queries:
+        - query: 'sum((node_filesystem_size_bytes{job="node-exporter",fstype!="",instance!=""} - node_filesystem_avail_bytes{job="node-exporter", fstype!=""})) by (instance)'
+          legend: "Used: {{ instance }}"
+        - query: 'sum((node_filesystem_avail_bytes{job="node-exporter",fstype!="",instance!=""})) by (instance)'
+          legend: "Available: {{ instance }}"
+      yAxisFormat: bytes

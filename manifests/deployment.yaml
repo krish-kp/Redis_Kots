@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redisdb
+  name: redisdb
+spec:
+  selector:
+    matchLabels:
+      app: redisdb
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redisdb
+    spec:
+      containers:
+      - image: redis
+        name: redis
+        command:
+          - redis-server
+          - "/opt/redis.conf"
+        env:
+        - name: MASTER
+          value: "true"
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /opt
+          name: config
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: redisconf
+          items:
+          - key: redis.conf
+            path: redis.conf
+status: {}

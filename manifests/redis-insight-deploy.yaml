@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redisinsight 
+  labels:
+    app: redisinsight 
+spec:
+  selector:
+    matchLabels:
+      app: redisinsight 
+  template: 
+    metadata:
+      labels:
+        app: redisinsight 
+    spec:
+      containers:
+      - name:  redisinsight 
+        image: redislabs/redisinsight
+        imagePullPolicy: IfNotPresent 
+        volumeMounts:
+        - name: db 
+          mountPath: /db
+        ports:
+        - containerPort: 8001 
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+      volumes:
+      - name: db
+        emptyDir: {}
