@@ -11,3 +11,12 @@
 *	redis-insight-deploy.yaml  -- redisinsight database deployment file
 *	service-redis-insight.yaml -- Cluster IP service for redisinsight
 *	service.yaml --  Cluster IP service for redis database
+
+**Deployment**
+
+**Existing Cluster:**
+* curl https://kots.io/install | bash
+* kubectl kots install qa-donkey/unstable
+
+**Embedded Cluster:**
+* curl -sSL https://k8s.kurl.sh/qa-donkey-unstable | sudo bash
